@@ -101,3 +101,30 @@ export const verifyOtp = async (req, res) => {
     },
   });
 };
+
+
+
+
+
+/** @desc Google Login */
+export const googleLogin = async (req, res) => {
+  try {
+    const { name, email, googleId } = req.body;
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = new User({ name, email, googleId, isVerified: true });
+      await user.save();
+    }
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    res.status(200).json({ message: "Login successful", token, user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Google login failed" });
+  }
+};

@@ -7,6 +7,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { Loader, Mail } from "lucide-react";
 import axios from "axios";
+import { GoogleLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -41,9 +43,6 @@ const Login = () => {
       });
 
       const { token, user } = res.data;
-
-      console.log(res.data);
-      
 
       // Save token & user
       localStorage.setItem("token", token);
@@ -81,6 +80,36 @@ const Login = () => {
     } finally {
       setLoadingOtp(false);
     }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const decoded = jwtDecode(credentialResponse.credential);
+      const { name, email, sub: googleId } = decoded;
+
+      const res = await axios.post(
+        "http://localhost:5000/api/auth/google-login",
+        {
+          name,
+          email,
+          googleId,
+        }
+      );
+
+      toast.success("Google login successful");
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+
+      setTimeout(() => {
+        window.location.href = "/dashboard";
+      }, 1000);
+    } catch (err) {
+      toast.error("Google login failed");
+    }
+  };
+
+  const handleGoogleError = () => {
+    toast.error("Google sign in failed");
   };
 
   return (
@@ -174,6 +203,17 @@ const Login = () => {
               {loadingLogin ? "Signing in..." : "Sign in"}
             </Button>
           </form>
+
+          {/* Google Login */}
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-500 mb-2">or continue with</p>
+            <div className="flex justify-center">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={handleGoogleError}
+              />
+            </div>
+          </div>
 
           <p className="text-sm text-gray-500 mt-4 text-center">
             Need an account?{" "}

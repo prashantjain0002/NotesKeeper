@@ -17,7 +17,7 @@ import axios from "axios";
 const Dashboard = () => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
 
-  const userId = storedUser.id;
+  const userId = storedUser.id || storedUser._id;
 
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState("");
