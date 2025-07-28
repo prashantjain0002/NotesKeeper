@@ -29,6 +29,13 @@ const Login = () => {
     }));
   };
 
+  useEfffect(async () => {
+    const res = await axios.get(`https://api.thecatapi.com/v1/images/search`);
+
+    console.log(res);
+    
+  }, [])
+
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!formData.email || !formData.otp) {
