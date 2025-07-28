@@ -5,7 +5,8 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
-import { Loader, Mail, ShieldCheck } from "lucide-react";
+import { Loader, Mail } from "lucide-react";
+import axios from "axios";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +14,9 @@ const Login = () => {
     otp: "",
     rememberMe: false,
   });
+
+  const [loadingLogin, setLoadingLogin] = useState(false);
+  const [loadingOtp, setLoadingOtp] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -22,25 +26,61 @@ const Login = () => {
     }));
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     if (!formData.email || !formData.otp) {
       toast.error("Please fill all fields.");
       return;
     }
 
-    toast.success("Logged in successfully.");
-    setTimeout(() => {
-      window.location.href = "/dashboard";
-    }, 1000);
+    try {
+      setLoadingLogin(true);
+      const res = await axios.post("http://localhost:5000/api/auth/verify", {
+        email: formData.email,
+        otp: formData.otp,
+      });
+
+      const { token, user } = res.data;
+
+      // Save token
+      if (formData.rememberMe) {
+        localStorage.setItem("token", token);
+      } else {
+        sessionStorage.setItem("token", token);
+      }
+
+      toast.success("Logged in successfully.");
+      setTimeout(() => {
+        window.location.href = "/dashboard";
+      }, 1000);
+    } catch (err) {
+      toast.error(
+        err.response?.data?.message || "OTP verification failed. Try again."
+      );
+    } finally {
+      setLoadingLogin(false);
+    }
   };
 
-  const handleResend = () => {
+  const handleResend = async () => {
     if (!formData.email) {
       toast.error("Enter your email to receive OTP.");
       return;
     }
-    toast.success("OTP sent to your email.");
+
+    try {
+      setLoadingOtp(true);
+      const res = await axios.post("http://localhost:5000/api/auth/login", {
+        email: formData.email,
+      });
+      toast.success(res.data.message || "OTP sent.");
+    } catch (err) {
+      toast.error(
+        err.response?.data?.message || "Failed to send OTP. Try again."
+      );
+    } finally {
+      setLoadingOtp(false);
+    }
   };
 
   return (
@@ -81,7 +121,7 @@ const Login = () => {
               </div>
             </div>
 
-            {/* OTP with Send OTP */}
+            {/* OTP */}
             <div>
               <Label htmlFor="otp" className="block mb-1 text-sm">
                 OTP
@@ -93,14 +133,15 @@ const Login = () => {
                   placeholder="Enter OTP"
                   value={formData.otp}
                   onChange={handleChange}
-                  className="pr-[6.5rem]" // space for button
+                  className="pr-[6.5rem]"
                 />
                 <button
                   type="button"
                   onClick={handleResend}
+                  disabled={loadingOtp}
                   className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-blue-600 hover:underline font-medium"
                 >
-                  Send OTP
+                  {loadingOtp ? "Sending..." : "Send OTP"}
                 </button>
               </div>
             </div>
@@ -127,9 +168,10 @@ const Login = () => {
             {/* Submit */}
             <Button
               type="submit"
+              disabled={loadingLogin}
               className="w-full bg-blue-600 hover:bg-blue-700 text-white"
             >
-              Sign in
+              {loadingLogin ? "Signing in..." : "Sign in"}
             </Button>
           </form>
 
