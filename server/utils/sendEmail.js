@@ -1,6 +1,11 @@
 import fs from "fs";
 import path from "path";
-import { transporter } from "./nodemailer.js";
+import sgMail from "@sendgrid/mail";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 export const sendOtpEmail = async (to, otp, name = "User") => {
   const templatePath = path.resolve("templates", "otp-template.html");
@@ -8,12 +13,15 @@ export const sendOtpEmail = async (to, otp, name = "User") => {
     .replace("{{otp}}", otp)
     .replace("{{name}}", name);
 
-  const mailOptions = {
-    from: `"HD App" <${process.env.EMAIL_USER}>`,
+  const msg = {
     to,
+    from: {
+      name: "HD App",
+      email: process.env.EMAIL_FROM,
+    },
     subject: "Your OTP Code - HD App",
     html,
   };
 
-  return transporter.sendMail(mailOptions);
+  return sgMail.send(msg);
 };
