@@ -29,7 +29,7 @@ const Login = () => {
     }));
   };
 
-  useEfffect(async () => {
+  useEffect(async () => {
     const res = await axios.get(`https://api.thecatapi.com/v1/images/search`);
 
     console.log(res);
