@@ -42,12 +42,12 @@ const Login = () => {
 
       const { token, user } = res.data;
 
-      // Save token
-      if (formData.rememberMe) {
-        localStorage.setItem("token", token);
-      } else {
-        sessionStorage.setItem("token", token);
-      }
+      console.log(res.data);
+      
+
+      // Save token & user
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
 
       toast.success("Logged in successfully.");
       setTimeout(() => {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -12,11 +12,27 @@ import {
 } from "@/components/ui/dialog";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import axios from "axios";
 
 const Dashboard = () => {
-  const [notes, setNotes] = useState(["Note 1", "Note 2"]);
+  const storedUser = JSON.parse(localStorage.getItem("user"));
+
+  const userId = storedUser.id;
+
+  const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState("");
   const [open, setOpen] = useState(false);
+
+  // Fetch notes on mount
+  useEffect(() => {
+    axios
+      .get(`http://localhost:5000/api/notes`, { params: { userId } })
+      .then((res) => setNotes(res.data.notes))
+      .catch((err) => {
+        console.error(err);
+        toast.error("Failed to load notes.");
+      });
+  }, []);
 
   const handleAddNote = () => {
     const trimmed = newNote.trim();
@@ -24,24 +40,42 @@ const Dashboard = () => {
       toast.error("Note cannot be empty.");
       return;
     }
-    if (notes.includes(trimmed)) {
-      toast.warning("This note already exists.");
-      return;
-    }
 
-    setNotes([...notes, trimmed]);
-    setNewNote("");
-    setOpen(false);
-    toast.success("Note added successfully.");
+    axios
+      .post("http://localhost:5000/api/notes", {
+        userId,
+        content: trimmed,
+      })
+      .then((res) => {
+        setNotes([res.data.note, ...notes]);
+        setNewNote("");
+        setOpen(false);
+        toast.success("Note added successfully.");
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Failed to add note.");
+      });
   };
 
-  const handleDelete = (index) => {
-    const deleted = notes[index];
-    setNotes(notes.filter((_, i) => i !== index));
-    toast.info(`Deleted: ${deleted}`);
+  const handleDelete = (id) => {
+    axios
+      .delete(`http://localhost:5000/api/notes/${id}`, {
+        data: { userId },
+      })
+      .then(() => {
+        setNotes(notes.filter((note) => note._id !== id));
+        toast.info("Note deleted.");
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Failed to delete note.");
+      });
   };
 
   const handleLogout = () => {
+    localStorage.clear();
+
     toast.success("Logged out successfully.");
     setTimeout(() => {
       window.location.href = "/login";
@@ -51,7 +85,6 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-white to-blue-50 flex items-center justify-center px-4">
       <div className="w-full max-w-md md:max-w-1/2 bg-white shadow-xl rounded-2xl p-6 border border-gray-200 transition-transform duration-300 ease-in-out hover:scale-[1.01]">
-        {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-lg font-bold text-gray-800">Dashboard</h1>
           <button
@@ -62,12 +95,11 @@ const Dashboard = () => {
           </button>
         </div>
 
-        {/* Welcome Section */}
         <div className="mb-6 p-4 rounded-xl bg-white shadow-md border border-gray-100 transition-all hover:shadow-lg">
           <p className="font-semibold text-gray-900 mb-1">
-            Welcome, Jonas Kahnwald!
+            Welcome, {storedUser.name}
           </p>
-          <p className="text-sm text-gray-500">Email: xxxxx@xxxx.com</p>
+          <p className="text-sm text-gray-500">Email: {storedUser.email}</p>
         </div>
 
         {/* Create Note Modal */}
@@ -101,23 +133,28 @@ const Dashboard = () => {
           </DialogContent>
         </Dialog>
 
-        {/* Notes Section */}
         <h2 className="text-sm font-semibold text-gray-800 mb-2">Your Notes</h2>
         <div className="space-y-2">
-          {notes.map((note, idx) => (
-            <div
-              key={idx}
-              className="flex justify-between items-center px-3 py-2 border border-gray-200 rounded-md bg-gray-50 hover:bg-blue-50 transition-all duration-200 shadow-sm hover:shadow-md"
-            >
-              <span className="text-sm text-gray-800">{note}</span>
-              <button
-                onClick={() => handleDelete(idx)}
-                className="text-red-500 hover:text-red-700 transition-colors"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
+          {notes.length === 0 ? (
+            <div className="text-center text-sm text-gray-500 py-4">
+              📝 Create your first note!
             </div>
-          ))}
+          ) : (
+            notes.map((note) => (
+              <div
+                key={note._id}
+                className="flex justify-between items-center px-3 py-2 border border-gray-200 rounded-md bg-gray-50 hover:bg-blue-50 transition-all duration-200 shadow-sm hover:shadow-md"
+              >
+                <span className="text-sm text-gray-800">{note.content}</span>
+                <button
+                  onClick={() => handleDelete(note._id)}
+                  className="text-red-500 hover:text-red-700 transition-colors"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>
