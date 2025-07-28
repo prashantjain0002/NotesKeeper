@@ -29,12 +29,19 @@ const Login = () => {
     }));
   };
 
-  useEffect(async () => {
-    const res = await axios.get(`https://api.thecatapi.com/v1/images/search`);
+  // useEffect(async () => {
+  //   const res = await axios.get(`https://api.thecatapi.com/v1/images/search`);
 
-    console.log(res);
+  //   console.log(res);
     
-  }, [])
+  // }, [])
+
+  //  useEffect(async () => {
+  //   const res = await axios.get(`${baseUrl}/api/test`);
+
+  //   console.log(res);
+    
+  // }, [])
 
   const handleLogin = async (e) => {
     e.preventDefault();
