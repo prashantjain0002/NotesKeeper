@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your OTP Code</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            padding-bottom: 24px;
+        }
+
+        .header h1 {
+            color: #2563eb;
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .content {
+            font-size: 16px;
+            color: #333333;
+            line-height: 1.6;
+        }
+
+        .otp-box {
+            margin: 24px 0;
+            background: #f0f4ff;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: #1e3a8a;
+            letter-spacing: 3px;
+        }
+
+        .footer {
+            font-size: 14px;
+            color: #888888;
+            text-align: center;
+            margin-top: 24px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>HD App</h1>
+        </div>
+        <div class="content">
+            <p>Hello <strong>{{name}}</strong>,</p>
+            <p>
+                You requested to verify your email. Please use the following One Time Password (OTP) to complete your
+                signup:
+            </p>
+            <div class="otp-box">{{otp}}</div>
+            <p>
+                This OTP is valid for <strong>5 minutes</strong>. If you didn’t request this, you can safely ignore this
+                email.
+            </p>
+            <p>Thank you,<br /><strong>HD Team</strong></p>
+        </div>
+        <div class="footer">
+            &copy; 2025 HD Inc. All rights reserved.
+        </div>
+    </div>
+</body>
+
+</html>
