@@ -219,7 +219,7 @@
 // export default Signup;
 
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -241,6 +241,8 @@ const Signup = () => {
   const [otpSent, setOtpSent] = useState(false);
   const [loadingOtp, setLoadingOtp] = useState(false);
   const [loadingSignup, setLoadingSignup] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -309,21 +311,18 @@ const Signup = () => {
       const decoded = jwtDecode(credentialResponse.credential);
       const { name, email, sub: googleId } = decoded;
 
-      const res = await axios.post(
-        `${baseUrl}/api/auth/google-login`,
-        {
-          name,
-          email,
-          googleId,
-        }
-      );
+      const res = await axios.post(`${baseUrl}/api/auth/google-login`, {
+        name,
+        email,
+        googleId,
+      });
 
       toast.success("Google login successful");
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
       setTimeout(() => {
-        window.location.href = "/dashboard";
+        navigate("/dashboard");
       }, 1000);
     } catch (err) {
       toast.error("Google login failed");

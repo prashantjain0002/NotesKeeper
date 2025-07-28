@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,8 @@ const Login = () => {
   const [loadingLogin, setLoadingLogin] = useState(false);
   const [loadingOtp, setLoadingOtp] = useState(false);
 
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -33,14 +35,14 @@ const Login = () => {
   //   const res = await axios.get(`https://api.thecatapi.com/v1/images/search`);
 
   //   console.log(res);
-    
+
   // }, [])
 
   //  useEffect(async () => {
   //   const res = await axios.get(`${baseUrl}/api/test`);
 
   //   console.log(res);
-    
+
   // }, [])
 
   const handleLogin = async (e) => {
@@ -65,7 +67,7 @@ const Login = () => {
 
       toast.success("Logged in successfully.");
       setTimeout(() => {
-        window.location.href = "/dashboard";
+        navigate("/dashboard");
       }, 1000);
     } catch (err) {
       toast.error(
@@ -102,14 +104,11 @@ const Login = () => {
       const decoded = jwtDecode(credentialResponse.credential);
       const { name, email, sub: googleId } = decoded;
 
-      const res = await axios.post(
-        `${baseUrl}/api/auth/google-login`,
-        {
-          name,
-          email,
-          googleId,
-        }
-      );
+      const res = await axios.post(`${baseUrl}/api/auth/google-login`, {
+        name,
+        email,
+        googleId,
+      });
 
       toast.success("Google login successful");
       localStorage.setItem("token", res.data.token);
