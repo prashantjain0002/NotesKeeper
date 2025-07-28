@@ -13,6 +13,7 @@ import {
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
+import { baseUrl } from "@/lib/utils";
 
 const Dashboard = () => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -26,7 +27,7 @@ const Dashboard = () => {
   // Fetch notes on mount
   useEffect(() => {
     axios
-      .get(`https://noteskeeper-75rb.onrender.com/api/notes`, { params: { userId } })
+      .get(`${baseUrl}/api/notes`, { params: { userId } })
       .then((res) => setNotes(res.data.notes))
       .catch((err) => {
         console.error(err);
@@ -42,7 +43,7 @@ const Dashboard = () => {
     }
 
     axios
-      .post("https://noteskeeper-75rb.onrender.com/api/notes", {
+      .post(`${baseUrl}/api/notes`, {
         userId,
         content: trimmed,
       })
@@ -60,7 +61,7 @@ const Dashboard = () => {
 
   const handleDelete = (id) => {
     axios
-      .delete(`https://noteskeeper-75rb.onrender.com/api/notes/${id}`, {
+      .delete(`${baseUrl}/api/notes/${id}`, {
         data: { userId },
       })
       .then(() => {

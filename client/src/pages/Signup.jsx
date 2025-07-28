@@ -228,6 +228,7 @@ import { CalendarDays, Mail, User, KeyRound, Loader } from "lucide-react";
 import axios from "axios";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
+import { baseUrl } from "@/lib/utils";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -256,7 +257,7 @@ const Signup = () => {
 
     try {
       setLoadingOtp(true);
-      const res = await axios.post("https://noteskeeper-75rb.onrender.com/api/auth/signup", {
+      const res = await axios.post(`${baseUrl}/api/auth/signup`, {
         name,
         dob,
         email,
@@ -282,7 +283,7 @@ const Signup = () => {
 
     try {
       setLoadingSignup(true);
-      const res = await axios.post("https://noteskeeper-75rb.onrender.com/api/auth/verify", {
+      const res = await axios.post(`${baseUrl}/api/auth/verify`, {
         name,
         dob,
         email,
@@ -309,7 +310,7 @@ const Signup = () => {
       const { name, email, sub: googleId } = decoded;
 
       const res = await axios.post(
-        "https://noteskeeper-75rb.onrender.com/api/auth/google-login",
+        `${baseUrl}/api/auth/google-login`,
         {
           name,
           email,

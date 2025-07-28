@@ -9,6 +9,7 @@ import { Loader, Mail } from "lucide-react";
 import axios from "axios";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
+import { baseUrl } from "@/lib/utils";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -37,7 +38,7 @@ const Login = () => {
 
     try {
       setLoadingLogin(true);
-      const res = await axios.post("https://noteskeeper-75rb.onrender.com/api/auth/verify", {
+      const res = await axios.post(`${baseUrl}/api/auth/verify`, {
         email: formData.email,
         otp: formData.otp,
       });
@@ -69,7 +70,7 @@ const Login = () => {
 
     try {
       setLoadingOtp(true);
-      const res = await axios.post("https://noteskeeper-75rb.onrender.com/api/auth/login", {
+      const res = await axios.post(`${baseUrl}/api/auth/login`, {
         email: formData.email,
       });
       toast.success(res.data.message || "OTP sent.");
@@ -88,7 +89,7 @@ const Login = () => {
       const { name, email, sub: googleId } = decoded;
 
       const res = await axios.post(
-        "https://noteskeeper-75rb.onrender.com/api/auth/google-login",
+        `${baseUrl}/api/auth/google-login`,
         {
           name,
           email,
