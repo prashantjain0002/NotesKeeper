@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { CalendarDays, Mail, User, KeyRound, Loader } from "lucide-react";
+import axios from "axios";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -15,13 +16,15 @@ const Signup = () => {
   });
 
   const [otpSent, setOtpSent] = useState(false);
+  const [loadingOtp, setLoadingOtp] = useState(false);
+  const [loadingSignup, setLoadingSignup] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleGetOtp = (e) => {
+  const handleGetOtp = async (e) => {
     e.preventDefault();
     const { name, dob, email } = formData;
     if (!name || !dob || !email) {
@@ -29,21 +32,50 @@ const Signup = () => {
       return;
     }
 
-    setOtpSent(true);
-    toast.success("OTP sent to your email.");
+    try {
+      setLoadingOtp(true);
+      const res = await axios.post("http://localhost:5000/api/auth/signup", {
+        name,
+        dob,
+        email,
+      });
+      setOtpSent(true);
+      toast.success(res.data.message || "OTP sent to your email.");
+    } catch (err) {
+      toast.error(
+        err.response?.data?.message || "Failed to send OTP. Try again."
+      );
+    } finally {
+      setLoadingOtp(false);
+    }
   };
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
-    if (!formData.otp) {
+    const { name, dob, email, otp } = formData;
+    if (!otp) {
       toast.error("Please enter the OTP to continue.");
       return;
     }
 
-    toast.success("Signup successful! Redirecting...");
-    setTimeout(() => {
-      window.location.href = "/dashboard";
-    }, 1200);
+    try {
+      setLoadingSignup(true);
+      const res = await axios.post(
+        "http://localhost:5000/api/auth/verify",
+        { name, dob, email, otp }
+      );
+
+      toast.success(res.data.message || "Signup successful! Redirecting...");
+      setTimeout(() => {
+        window.location.href = "/dashboard";
+      }, 1200);
+    } catch (err) {
+      toast.error(
+        err.response?.data?.message || "Signup failed. Please try again."
+      );
+    } finally {
+      setLoadingSignup(false);
+    }
   };
 
   return (
@@ -52,12 +84,12 @@ const Signup = () => {
         <div className="w-full md:w-1/2 p-8 md:p-12">
           <div className="mb-8">
             <div className="text-2xl font-bold text-blue-600 mb-1 flex items-center gap-2">
-              <Loader />
+              <Loader className="animate-spin" />
               HD
             </div>
             <h2 className="text-3xl font-semibold text-gray-800">Sign up</h2>
             <p className="text-sm text-gray-500">
-              Sign up to enjoy the feature of HD
+              Sign up to enjoy the features of HD
             </p>
           </div>
 
@@ -141,11 +173,22 @@ const Signup = () => {
               </div>
             )}
 
+            {/* Submit */}
             <Button
               type="submit"
+              disabled={loadingOtp || loadingSignup}
               className="w-full bg-blue-600 hover:bg-blue-700 text-white"
             >
-              {otpSent ? "Sign up" : "Get OTP"}
+              {loadingOtp || loadingSignup ? (
+                <span className="flex items-center justify-center gap-2">
+                  <Loader className="animate-spin w-4 h-4" />
+                  {otpSent ? "Signing up..." : "Sending OTP..."}
+                </span>
+              ) : otpSent ? (
+                "Sign up"
+              ) : (
+                "Get OTP"
+              )}
             </Button>
           </form>
 
