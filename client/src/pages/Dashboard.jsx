@@ -26,7 +26,7 @@ const Dashboard = () => {
   // Fetch notes on mount
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/api/notes`, { params: { userId } })
+      .get(`https://noteskeeper-75rb.onrender.com/api/notes`, { params: { userId } })
       .then((res) => setNotes(res.data.notes))
       .catch((err) => {
         console.error(err);
@@ -42,7 +42,7 @@ const Dashboard = () => {
     }
 
     axios
-      .post("http://localhost:5000/api/notes", {
+      .post("https://noteskeeper-75rb.onrender.com/api/notes", {
         userId,
         content: trimmed,
       })
@@ -60,7 +60,7 @@ const Dashboard = () => {
 
   const handleDelete = (id) => {
     axios
-      .delete(`http://localhost:5000/api/notes/${id}`, {
+      .delete(`https://noteskeeper-75rb.onrender.com/api/notes/${id}`, {
         data: { userId },
       })
       .then(() => {

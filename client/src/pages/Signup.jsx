@@ -256,7 +256,7 @@ const Signup = () => {
 
     try {
       setLoadingOtp(true);
-      const res = await axios.post("http://localhost:5000/api/auth/signup", {
+      const res = await axios.post("https://noteskeeper-75rb.onrender.com/api/auth/signup", {
         name,
         dob,
         email,
@@ -282,7 +282,7 @@ const Signup = () => {
 
     try {
       setLoadingSignup(true);
-      const res = await axios.post("http://localhost:5000/api/auth/verify", {
+      const res = await axios.post("https://noteskeeper-75rb.onrender.com/api/auth/verify", {
         name,
         dob,
         email,
@@ -309,7 +309,7 @@ const Signup = () => {
       const { name, email, sub: googleId } = decoded;
 
       const res = await axios.post(
-        "http://localhost:5000/api/auth/google-login",
+        "https://noteskeeper-75rb.onrender.com/api/auth/google-login",
         {
           name,
           email,

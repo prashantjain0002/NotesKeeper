@@ -37,7 +37,7 @@ const Login = () => {
 
     try {
       setLoadingLogin(true);
-      const res = await axios.post("http://localhost:5000/api/auth/verify", {
+      const res = await axios.post("https://noteskeeper-75rb.onrender.com/api/auth/verify", {
         email: formData.email,
         otp: formData.otp,
       });
@@ -69,7 +69,7 @@ const Login = () => {
 
     try {
       setLoadingOtp(true);
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
+      const res = await axios.post("https://noteskeeper-75rb.onrender.com/api/auth/login", {
         email: formData.email,
       });
       toast.success(res.data.message || "OTP sent.");
@@ -88,7 +88,7 @@ const Login = () => {
       const { name, email, sub: googleId } = decoded;
 
       const res = await axios.post(
-        "http://localhost:5000/api/auth/google-login",
+        "https://noteskeeper-75rb.onrender.com/api/auth/google-login",
         {
           name,
           email,
