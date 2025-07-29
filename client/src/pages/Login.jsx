@@ -115,7 +115,7 @@ const Login = () => {
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
       setTimeout(() => {
-        window.location.href = "/dashboard";
+        navigate("/dashboard");
       }, 1000);
     } catch (err) {
       toast.error("Google login failed");

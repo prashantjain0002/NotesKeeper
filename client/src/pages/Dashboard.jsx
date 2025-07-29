@@ -14,6 +14,7 @@ import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
 import { baseUrl } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -23,6 +24,8 @@ const Dashboard = () => {
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState("");
   const [open, setOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   // Fetch notes on mount
   useEffect(() => {
@@ -79,7 +82,7 @@ const Dashboard = () => {
 
     toast.success("Logged out successfully.");
     setTimeout(() => {
-      window.location.href = "/login";
+      navigate("/login");
     }, 1000);
   };
 
