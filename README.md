@@ -1,6 +1,6 @@
 
 
-# 🗒️ NotesKeeper Pro
+# 🗒️ NotesKeeper
 
 A full-stack notes management application with secure authentication, CRUD features, and modern UI. Built using **React (Vite)**, **TailwindCSS**, **Shadcn UI**, **Express.js**, and **MongoDB**.
 
