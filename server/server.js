@@ -12,6 +12,8 @@ const app = express();
 
 const allowedOrigins = [
   "https://notes-keeper-lime.vercel.app",
+  "https://notes-keeper-r9qblr33y-prashant-jains-projects-d2e07373.vercel.app",
+  "https://notes-keeper-git-main-prashant-jains-projects-d2e07373.vercel.app",
   "http://localhost:5173",
 ];
 
