@@ -5,10 +5,12 @@ import "./index.css";
 import App from "./App.jsx";
 import { Toaster } from "sonner";
 
+const clientId = process.env.GOOGLE_CLIENT_ID;
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Toaster position="top-right" richColors />
-    <GoogleOAuthProvider clientId="458212490870-3ksq8un9vd95sf6on4i7c60oh772gh2b.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId={clientId}>
       <App />
     </GoogleOAuthProvider>
   </StrictMode>
