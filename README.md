@@ -6,6 +6,8 @@ A full-stack notes management application with secure authentication, CRUD featu
 
 ![NotesKeeper Banner](https://img.shields.io/badge/Status-Active-brightgreen) ![Tech Stack](https://img.shields.io/badge/Stack-MERN-blue)
 
+🔗 **Live Demo** - [https://notes-keeper-lime.vercel.app](https://notes-keeper-lime.vercel.app)
+
 ---
 
 ## 📌 Table of Contents
